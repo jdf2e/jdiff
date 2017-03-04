@@ -17,7 +17,7 @@
     <script src="//cdn.bootcss.com/diff_match_patch/20121119/diff_match_patch.js"></script>
     <script src="http://codemirror.net/addon/merge/merge.js"></script>
 
-    <script src="//momentjs.com/downloads/moment.js"></script>
+    <script src="//momentjs.com/static/js/global.js"></script>
 
     <style>
         .curr {
@@ -114,7 +114,7 @@
             </div>
             <ul>
                 <li @click="selectFile(item)" v-for="item in arr" :class="{curr:current==item}" v-if="showOnlyDiff?item.diffFlag:true">
-                    {{item.relativePath}}
+                    {{item.relativePath||item.baseName}}
                     <a v-if="item.diffFlag">有变化</a>
                     <span v-if="item.diffFlag">{{item.relativeTime}}</span>
                 </li>
@@ -122,7 +122,7 @@
         </div>
         <div class="right">
             <div class="title-bar">
-                <h2 class="tl">{{current.relativePath}}</h2>
+                <h2 class="tl">{{current.relativePath||current.baseName}}</h2>
                 <h2 class="tl">{{current.removeUrl}}</h2>
             </div>
             <div id="view"></div>
@@ -132,6 +132,8 @@
     </div>
 
     <script>
+        moment.locale('zh-cn');
+
         function ready(data) {
             data.map(d => {
                 d.relativeTime = new Date(d.status.mtime);
@@ -146,7 +148,6 @@
                     showOnlyDiff: false
                 },
                 methods: {
-
                     selectFile(item) {
                         window.dv.edit.setValue(item.localTxt);
                         window.dv.rightOriginal().setValue(item.remoteTxt);
@@ -154,6 +155,8 @@
                     }
                 },
                 mounted: function () {
+
+
                     window.dv = CodeMirror.MergeView(view, {
                         value: "",
                         origLeft: null,
@@ -164,6 +167,9 @@
                         connect: "align",
                         collapseIdentical: false
                     });
+                    if (this.arr[0]) {
+                        this.selectFile(this.arr[0]);
+                    }
                 }
             })
         }

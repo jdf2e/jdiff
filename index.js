@@ -22,6 +22,7 @@ if (program.local && program.remote) {
     }).map(absPath => {
         absPath = path.normalize(absPath);
         let relativePath = absPath.replace(absLocalRoot, "");
+        let baseName = path.basename(absPath);
         let removeUrl = url.resolve(program.remote, relativePath);
         let type = path.extname(absPath);
         let status = fs.lstatSync(absPath);
@@ -35,7 +36,8 @@ if (program.local && program.remote) {
             relativePath,
             removeUrl,
             type,
-            localTxt
+            localTxt,
+            baseName
         }
     });
 
