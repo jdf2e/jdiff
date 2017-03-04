@@ -1,0 +1,177 @@
+<html>
+
+<head>
+
+
+    <link rel=stylesheet href="//cdn.bootcss.com/codemirror/5.24.2/codemirror.css" />
+    <link rel=stylesheet href="//cdn.bootcss.com/codemirror/5.24.2/addon/merge/merge.css" />
+
+    <script src="//misc.360buyimg.com/felibs/jquery/2.1.2/jquery.min.js"></script>
+    <script src="//misc.360buyimg.com/felibs/vue/2.1.10/vue.min.js"></script>
+
+    <script src="//codemirror.net/lib/codemirror.js"></script>
+    <script src="//cdn.bootcss.com/codemirror/5.24.2/mode/xml/xml.js"></script>
+    <script src="//cdn.bootcss.com/codemirror/5.24.2/mode/css/css.js"></script>
+    <script src="//cdn.bootcss.com/codemirror/5.24.2/mode/javascript/javascript.js"></script>
+    <script src="//codemirror.net/mode/htmlmixed/htmlmixed.js"></script>
+    <script src="//cdn.bootcss.com/diff_match_patch/20121119/diff_match_patch.js"></script>
+    <script src="http://codemirror.net/addon/merge/merge.js"></script>
+
+    <script src="//momentjs.com/downloads/moment.js"></script>
+
+    <style>
+        .curr {
+            background-color: #fff;
+            border-radius: 12px;
+            border: 1px #ccc solid;
+        }
+        
+        .left .title {
+            height: 70px;
+            line-height: 70px;
+            text-align: center;
+            border-bottom: 1px #ccc solid;
+        }
+        
+        .left ul {
+            margin: 3px;
+            padding: 5px;
+        }
+        
+        .left ul li {
+            list-style: none;
+            cursor: pointer;
+            margin: 5px;
+            padding: 7px;
+        }
+        
+        .left ul li span {
+            color: #ccc;
+        }
+        
+        .left ul li a {
+            color: red;
+        }
+        
+        .CodeMirror-merge,
+        .CodeMirror-merge .CodeMirror {
+            height: calc(100% - 10px);
+        }
+        
+        .CodeMirror-merge-2pane .CodeMirror-merge-pane {
+            height: calc(100% - -8px);
+        }
+        
+        #app {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+        }
+        
+        .left {
+            height: 100%;
+            width: 300px;
+            background-color: #f7f7f7;
+        }
+        
+        .right {
+            flex: 3;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .title-bar {
+            display: flex;
+            height: 70px;
+            line-height: 30px;
+            border-left: 1px #ccc solid;
+        }
+        
+        .title-bar .tl {
+            text-align: center;
+            flex: 1
+        }
+        
+        #view {
+            flex: 1;
+            height: calc(100% - 80px);
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <div class="left">
+            <div class="title">
+                <label> 
+                    <input type="checkbox" v-model="showOnlyDiff" />
+                    只显示有变动的文件
+                </label>
+            </div>
+            <ul>
+                <li @click="selectFile(item)" v-for="item in arr" :class="{curr:current==item}" v-if="showOnlyDiff?item.diffFlag:true">
+                    {{item.relativePath}}
+                    <a v-if="item.diffFlag">有变化</a>
+                    <span v-if="item.diffFlag">{{item.relativeTime}}</span>
+                </li>
+            </ul>
+        </div>
+        <div class="right">
+            <div class="title-bar">
+                <h2 class="tl">{{current.relativePath}}</h2>
+                <h2 class="tl">{{current.removeUrl}}</h2>
+            </div>
+            <div id="view"></div>
+        </div>
+
+
+    </div>
+
+    <script>
+        function ready(data) {
+            data.map(d => {
+                d.relativeTime = new Date(d.status.mtime);
+                d.relativeTime = moment(d.relativeTime).fromNow();
+            });
+            console.log(data);
+            var app = new Vue({
+                el: '#app',
+                data: {
+                    arr: data,
+                    current: {},
+                    showOnlyDiff: false
+                },
+                methods: {
+
+                    selectFile(item) {
+                        window.dv.edit.setValue(item.localTxt);
+                        window.dv.rightOriginal().setValue(item.remoteTxt);
+                        this.current = item;
+                    }
+                },
+                mounted: function () {
+                    window.dv = CodeMirror.MergeView(view, {
+                        value: "",
+                        origLeft: null,
+                        orig: "",
+                        lineNumbers: true,
+                        mode: "text/html",
+                        highlightDifferences: true,
+                        connect: "align",
+                        collapseIdentical: false
+                    });
+                }
+            })
+        }
+
+        $.getJSON("/?action=fetch").then(data => {
+            ready(data);
+        });
+    </script>
+</body>
+
+</html>
