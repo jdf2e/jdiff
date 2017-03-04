@@ -71,38 +71,47 @@ if (program.local && program.remote) {
     });
 
     let promisePool = [];
+
+    function beautify(item) {
+        switch (item.type) {
+            case ".js":
+                item.localTxt = beautify_js(item.localTxt);
+                item.remoteTxt = beautify_js(item.remoteTxt);
+
+                break;
+            case ".css":
+                item.localTxt = beautify_css(item.localTxt);
+                item.remoteTxt = beautify_css(item.remoteTxt);
+                break;
+            case ".html":
+                item.localTxt = beautify_html(item.localTxt);
+                item.remoteTxt = beautify_html(item.remoteTxt);
+                fs.writeFileSync("aa.html", item.localTxt)
+                break;
+        }
+    }
     obj.forEach(item => {
         let promise = new Promise((resolve, reject) => {
             request(item.removeUrl)
                 .then(function (str) {
                     item.remoteTxt = str;
-                    switch (item.type) {
-                        case ".js":
-                            item.localTxt = beautify_js(item.localTxt);
-                            item.remoteTxt = beautify_js(item.remoteTxt);
-
-                            break;
-                        case ".css":
-                            item.localTxt = beautify_css(item.localTxt);
-                            item.remoteTxt = beautify_css(item.remoteTxt);
-                            break;
-                        case ".html":
-                            item.localTxt = beautify_html(item.localTxt);
-                            item.remoteTxt = beautify_html(item.remoteTxt);
-                            break;
-                    }
-                    item.diffFlag = !(item.localTxt === item.remoteTxt)
-                    resolve(item)
+                    item.diffFlag = !(item.localTxt === item.remoteTxt);
+                    beautify(item);
+                    resolve(item);
                 })
                 .catch(function (err) {
-                    console.log(err);
+                    item.diffFlag = true;
+                    item.remoteTxt = `` //JSON.stringify(err, null, 2);
+                    beautify(item);
+                    item.remoteTxt = err.response.body; //JSON.stringify(err.response.body, null, 2);
+                    resolve(item);
+                    //console.log(err);
                 });
         });
         promisePool.push(promise);
     });
 
     Promise.all(promisePool).then(arr => {
-        //console.log(arr);
         server = http.createServer((req, res) => {
             let myUrl = querystring.parse(url.parse(req.url).query);
             if (myUrl.action == "fetch") {
