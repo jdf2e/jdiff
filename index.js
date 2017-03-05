@@ -86,7 +86,6 @@ if (program.local && program.remote) {
             case ".html":
                 item.localTxt = beautify_html(item.localTxt);
                 item.remoteTxt = beautify_html(item.remoteTxt);
-                fs.writeFileSync("aa.html", item.localTxt)
                 break;
         }
     }
@@ -128,7 +127,7 @@ if (program.local && program.remote) {
         server.listen(8081);
         let port = server.address().port;
         console.log(port);
-        //opn('http://localhost:' + port);
+        opn('http://localhost:' + port);
     });
 } else {
     console.log("-l -r");
