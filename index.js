@@ -18,7 +18,7 @@ if (program.local && program.remote) {
 
 
     let obj = shell.find(absLocalRoot).filter(function (file) {
-        return file.match(/\.(js|html|css|jpg|png|gif)$/ig);
+        return file.match(/\.(js|html|css)$/ig);
     }).map(absPath => {
         absPath = path.normalize(absPath);
         let relativePath = absPath.replace(absLocalRoot, "");
@@ -124,7 +124,7 @@ if (program.local && program.remote) {
                 })
             }
         })
-        server.listen(8081);
+        server.listen(0);
         let port = server.address().port;
         console.log(port);
         opn('http://localhost:' + port);
