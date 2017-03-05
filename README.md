@@ -3,7 +3,7 @@
 
 可将本地目录中的前端资源与线上进行比对，确保安全。
 
-![](http://wshxbqq-wshxbqq.stor.sinaapp.com/2017-03-06_03-34-59_613___1.png)
+![](https://raw.githubusercontent.com/jdf2e/jdiff/master/test/1.png)
 
 
 ```
