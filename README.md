@@ -3,6 +3,9 @@
 
 可将本地目录中的前端资源与线上进行比对，确保安全。
 
+![](http://wshxbqq-wshxbqq.stor.sinaapp.com/2017-03-06_03-34-59_613___1.png)
+
+
 ```
 npm install -g jdiff
 ```
@@ -17,6 +20,7 @@ jdiff -l ./myproject/xxx  -r http://www.domain.com/xxx -t 1d
 -t time 指定过滤指定时间内的本地文件, (1d = 1天, 1h = 一小时)
 
 ```
+
 
 
 js  html css 自动格式化, 即使线上代码被压缩也可比对.
