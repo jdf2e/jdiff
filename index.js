@@ -126,7 +126,7 @@ if (program.local && program.remote) {
         })
         server.listen(0);
         let port = server.address().port;
-        console.log(port);
+        console.log(`listen at: ${port}`);
         opn('http://localhost:' + port);
     });
 } else {
