@@ -1,7 +1,8 @@
 #!/usr/bin/env node
+
 var program = require('commander');
 program
-    .version(require('pkginfo')(module).version)
+    .version(require('../package.json').version)
     .option('-l, --local <local>', 'specified local folder ex: ./project/xxx')
     .option('-r, --remote <remote>', 'specified remote url ex: http://www.domain.com/xxx')
     .option('-t, --time [time]', 'specified file lastmodify time  1d=1day , 1h=1hour')
