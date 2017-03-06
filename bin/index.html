@@ -1,56 +1,25 @@
 <html>
 
 <head>
-
-
-    <link rel=stylesheet href="//cdn.bootcss.com/codemirror/5.24.2/codemirror.css" />
-    <link rel=stylesheet href="//cdn.bootcss.com/codemirror/5.24.2/addon/merge/merge.css" />
+    <link rel=stylesheet href="//misc.360buyimg.com/felibs/codemirror/5.24.2/codemirror.css" />
+    <link rel=stylesheet href="//misc.360buyimg.com/felibs/codemirror/5.24.2/merge.css" />
 
     <script src="//misc.360buyimg.com/felibs/jquery/2.1.2/jquery.min.js"></script>
     <script src="//misc.360buyimg.com/felibs/vue/2.1.10/vue.min.js"></script>
-
-    <script src="http://cdn.bootcss.com/codemirror/5.24.2/codemirror.js"></script>
-    <script src="//cdn.bootcss.com/codemirror/5.24.2/mode/xml/xml.js"></script>
-    <script src="//cdn.bootcss.com/codemirror/5.24.2/mode/css/css.js"></script>
-    <script src="//cdn.bootcss.com/codemirror/5.24.2/mode/javascript/javascript.js"></script>
-    <script src="//cdn.bootcss.com/codemirror/5.24.2/mode/htmlmixed/htmlmixed.js"></script>
-    <script src="//cdn.bootcss.com/diff_match_patch/20121119/diff_match_patch.js"></script>
-    <script src="http://codemirror.net/addon/merge/merge.js"></script>
-
-    <script src="//momentjs.com/static/js/global.js"></script>
+    <script src="//misc.360buyimg.com/felibs/codemirror/5.24.2/codemirror.js"></script>
+    <script src="//misc.360buyimg.com/felibs/codemirror/5.24.2/xml.js"></script>
+    <script src="//misc.360buyimg.com/felibs/codemirror/5.24.2/css.js"></script>
+    <script src="//misc.360buyimg.com/felibs/codemirror/5.24.2/javascript.js"></script>
+    <script src="//misc.360buyimg.com/felibs/codemirror/5.24.2/htmlmixed.js"></script>
+    <script src="//misc.360buyimg.com/felibs/diff_match_patch/20121119/diff_match_patch.js"></script>
+    <script src="//misc.360buyimg.com/felibs/codemirror/5.24.2/merge.js"></script>
+    <script src="//misc.360buyimg.com/felibs/moment.js/2.17.1/moment-with-locales.js"></script>
 
     <style>
         .curr {
             background-color: #fff;
             border-radius: 12px;
             border: 1px #ccc solid;
-        }
-        
-        .left .title {
-            height: 70px;
-            line-height: 70px;
-            text-align: center;
-            border-bottom: 1px #ccc solid;
-        }
-        
-        .left ul {
-            margin: 3px;
-            padding: 5px;
-        }
-        
-        .left ul li {
-            list-style: none;
-            cursor: pointer;
-            margin: 5px;
-            padding: 7px;
-        }
-        
-        .left ul li span {
-            color: #ccc;
-        }
-        
-        .left ul li a {
-            color: red;
         }
         
         .CodeMirror-merge,
@@ -73,8 +42,37 @@
         
         .left {
             height: 100%;
-            width: 300px;
+            width: 15%;
             background-color: #f7f7f7;
+            min-width: 300px;
+        }
+        
+        .left .title {
+            height: 50px;
+            line-height: 50px;
+            text-align: center;
+            border-bottom: 1px #ccc solid;
+        }
+        
+        .left ul {
+            margin: 3px;
+            padding: 5px;
+        }
+        
+        .left ul li {
+            list-style: none;
+            cursor: pointer;
+            margin: 5px;
+            word-wrap: break-word;
+            padding: 10px;
+        }
+        
+        .left ul li span {
+            color: #ccc;
+        }
+        
+        .left ul li a {
+            color: red;
         }
         
         .right {
@@ -82,18 +80,28 @@
             height: 100%;
             display: flex;
             flex-direction: column;
+            max-width: 85%;
         }
         
         .title-bar {
             display: flex;
-            height: 70px;
-            line-height: 30px;
+            height: 50px;
             border-left: 1px #ccc solid;
         }
         
         .title-bar .tl {
-            text-align: center;
-            flex: 1
+            flex: 1;
+            max-width: 50%;
+            font-size: 1em;
+            text-indent: 2em;
+        }
+        
+        .title-bar .tt {
+            text-indent: 6em;
+        }
+        
+        .title-bar .tl .txt {
+            color: #989898;
         }
         
         #view {
@@ -107,13 +115,14 @@
     <div id="app">
         <div class="left">
             <div class="title">
+                <input type="text" v-model="regFilter" placeholder="正则过滤: misc/xxx/xxx.js" />
                 <label> 
                     <input type="checkbox" v-model="showOnlyDiff" />
-                    只显示有变动的文件
+                    只变动
                 </label>
             </div>
             <ul>
-                <li @click="selectFile(item)" v-for="item in arr" :class="{curr:current==item}" v-if="showOnlyDiff?item.diffFlag:true">
+                <li @click="selectFile(item)" v-for="item in arr" :class="{curr:current==item}" v-if="showOnlyDiff?item.diffFlag:true && regTest(item)">
                     {{item.relativePath||item.baseName}}
                     <a v-if="item.diffFlag">有变化</a>
                     <span v-if="item.diffFlag">{{item.relativeTime}}</span>
@@ -122,8 +131,8 @@
         </div>
         <div class="right">
             <div class="title-bar">
-                <h2 class="tl">{{current.relativePath||current.baseName}}</h2>
-                <h2 class="tl">{{current.removeUrl}}</h2>
+                <h2 class="tl">本地: <span class="txt">{{current.relativePath||current.baseName}}</span> </h2>
+                <h2 class="tl tt">远程: <span class="txt">{{current.removeUrl}}</span></h2>
             </div>
             <div id="view"></div>
         </div>
@@ -147,9 +156,17 @@
                 data: {
                     arr: data,
                     current: {},
-                    showOnlyDiff: false
+                    showOnlyDiff: false,
+                    regFilter: ""
                 },
                 methods: {
+                    regTest: function (item) {
+                        if (this.regFilter) {
+                            let reg = new RegExp(this.regFilter, "ig")
+                            return reg.test(item.removeUrl)
+                        }
+                        return true;
+                    },
                     selectFile(item) {
                         this.createDv(item);
                         window.dv.edit.setValue(item.localTxt);
@@ -206,3 +223,18 @@
 </body>
 
 </html>
+
+
+<!--<link rel=stylesheet href="//misc.360buyimg.com/felibs/codemirror/5.24.2/codemirror.css" />
+    <link rel=stylesheet href="//misc.360buyimg.com/felibs/codemirror/5.24.2/merge.css" />
+
+    <script src="//misc.360buyimg.com/felibs/jquery/2.1.2/jquery.min.js"></script>
+    <script src="//misc.360buyimg.com/felibs/vue/2.1.10/vue.min.js"></script>
+    <script src="//misc.360buyimg.com/felibs/codemirror.js"></script>
+    <script src="//misc.360buyimg.com/felibs/mode/xml/xml.js"></script>
+    <script src="//misc.360buyimg.com/felibs/mode/css/css.js"></script>
+    <script src="//misc.360buyimg.com/felibs/mode/javascript/javascript.js"></script>
+    <script src="//misc.360buyimg.com/felibs/mode/htmlmixed/htmlmixed.js"></script>
+    <script src="//misc.360buyimg.com/felibs/diff_match_patch/20121119/diff_match_patch.js"></script>
+    <script src="//misc.360buyimg.com/felibs/codemirror/5.24.2/merge.js"></script>
+    <script src="//misc.360buyimg.com/felibs/moment.js/2.17.1/moment-with-locales.js"></script>-->
