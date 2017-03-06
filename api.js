@@ -17,6 +17,10 @@ module.exports = function (config) {
 
     if (config.local && config.remote) {
         let absLocalRoot = path.resolve(config.local);
+        let reg = /^http/ig;
+        if (!reg.test(config.remote)) {
+            config.remote = `http://${config.remote}`
+        }
         let obj = shell.find(absLocalRoot).filter(function (file) {
             return file.match(/\.(js|html|css)$/ig);
         }).map(absPath => {
