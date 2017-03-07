@@ -28,7 +28,7 @@ module.exports = function (config) {
             let relativePath = absPath.replace(absLocalRoot, "");
             relativePath = relativePath[0] == path.sep ? relativePath.substr(1) : relativePath;
             let baseName = path.basename(absPath);
-            let removeUrl = urljoin(config.remote, relativePath);
+            let removeUrl = relativePath ? urljoin(config.remote, relativePath) : urljoin(config.remote)
             let type = path.extname(absPath);
             let status = fs.lstatSync(absPath);
             let localTxt;
