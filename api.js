@@ -135,6 +135,6 @@ module.exports = function (config) {
             opn('http://localhost:' + port);
         });
     } else {
-        console.log("-l -r");
+        //console.log("");
     }
 }

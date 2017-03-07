@@ -1,6 +1,6 @@
 {
   "name": "jdiff",
-  "version": "0.0.4",
+  "version": "0.0.6",
   "description": "local-remote differ",
   "preferGlobal": true,
   "bin": {
