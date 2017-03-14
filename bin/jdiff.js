@@ -1,2 +1,5 @@
 #!/usr/bin/env node
-require('../index');
+"use strict";
+var program = require('./commander');
+var api = require('../api');
+api(program);

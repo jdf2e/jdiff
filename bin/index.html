@@ -1,34 +1,174 @@
 <html>
 
 <head>
-    <link rel=stylesheet href="//misc.360buyimg.com/felibs/codemirror/5.24.2/codemirror.css" />
-    <link rel=stylesheet href="//misc.360buyimg.com/felibs/codemirror/5.24.2/merge.css" />
+      <script src="https://misc.360buyimg.com/felibs/diff_match_patch/20121119/diff_match_patch_uncompressed.js"></script>
+    <script>
+        (function(global){"use strict";var _Base64=global.Base64;var version="2.1.9";var buffer;if(typeof module!=="undefined"&&module.exports){try{buffer=require("buffer").Buffer}catch(err){}}var b64chars="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";var b64tab=function(bin){var t={};for(var i=0,l=bin.length;i<l;i++)t[bin.charAt(i)]=i;return t}(b64chars);var fromCharCode=String.fromCharCode;var cb_utob=function(c){if(c.length<2){var cc=c.charCodeAt(0);return cc<128?c:cc<2048?fromCharCode(192|cc>>>6)+fromCharCode(128|cc&63):fromCharCode(224|cc>>>12&15)+fromCharCode(128|cc>>>6&63)+fromCharCode(128|cc&63)}else{var cc=65536+(c.charCodeAt(0)-55296)*1024+(c.charCodeAt(1)-56320);return fromCharCode(240|cc>>>18&7)+fromCharCode(128|cc>>>12&63)+fromCharCode(128|cc>>>6&63)+fromCharCode(128|cc&63)}};var re_utob=/[\uD800-\uDBFF][\uDC00-\uDFFFF]|[^\x00-\x7F]/g;var utob=function(u){return u.replace(re_utob,cb_utob)};var cb_encode=function(ccc){var padlen=[0,2,1][ccc.length%3],ord=ccc.charCodeAt(0)<<16|(ccc.length>1?ccc.charCodeAt(1):0)<<8|(ccc.length>2?ccc.charCodeAt(2):0),chars=[b64chars.charAt(ord>>>18),b64chars.charAt(ord>>>12&63),padlen>=2?"=":b64chars.charAt(ord>>>6&63),padlen>=1?"=":b64chars.charAt(ord&63)];return chars.join("")};var btoa=global.btoa?function(b){return global.btoa(b)}:function(b){return b.replace(/[\s\S]{1,3}/g,cb_encode)};var _encode=buffer?function(u){return(u.constructor===buffer.constructor?u:new buffer(u)).toString("base64")}:function(u){return btoa(utob(u))};var encode=function(u,urisafe){return!urisafe?_encode(String(u)):_encode(String(u)).replace(/[+\/]/g,function(m0){return m0=="+"?"-":"_"}).replace(/=/g,"")};var encodeURI=function(u){return encode(u,true)};var re_btou=new RegExp(["[À-ß][-¿]","[à-ï][-¿]{2}","[ð-÷][-¿]{3}"].join("|"),"g");var cb_btou=function(cccc){switch(cccc.length){case 4:var cp=(7&cccc.charCodeAt(0))<<18|(63&cccc.charCodeAt(1))<<12|(63&cccc.charCodeAt(2))<<6|63&cccc.charCodeAt(3),offset=cp-65536;return fromCharCode((offset>>>10)+55296)+fromCharCode((offset&1023)+56320);case 3:return fromCharCode((15&cccc.charCodeAt(0))<<12|(63&cccc.charCodeAt(1))<<6|63&cccc.charCodeAt(2));default:return fromCharCode((31&cccc.charCodeAt(0))<<6|63&cccc.charCodeAt(1))}};var btou=function(b){return b.replace(re_btou,cb_btou)};var cb_decode=function(cccc){var len=cccc.length,padlen=len%4,n=(len>0?b64tab[cccc.charAt(0)]<<18:0)|(len>1?b64tab[cccc.charAt(1)]<<12:0)|(len>2?b64tab[cccc.charAt(2)]<<6:0)|(len>3?b64tab[cccc.charAt(3)]:0),chars=[fromCharCode(n>>>16),fromCharCode(n>>>8&255),fromCharCode(n&255)];chars.length-=[0,0,2,1][padlen];return chars.join("")};var atob=global.atob?function(a){return global.atob(a)}:function(a){return a.replace(/[\s\S]{1,4}/g,cb_decode)};var _decode=buffer?function(a){return(a.constructor===buffer.constructor?a:new buffer(a,"base64")).toString()}:function(a){return btou(atob(a))};var decode=function(a){return _decode(String(a).replace(/[-_]/g,function(m0){return m0=="-"?"+":"/"}).replace(/[^A-Za-z0-9\+\/]/g,""))};var noConflict=function(){var Base64=global.Base64;global.Base64=_Base64;return Base64};global.Base64={VERSION:version,atob:atob,btoa:btoa,fromBase64:decode,toBase64:encode,utob:utob,encode:encode,encodeURI:encodeURI,btou:btou,decode:decode,noConflict:noConflict};if(typeof Object.defineProperty==="function"){var noEnum=function(v){return{value:v,enumerable:false,writable:true,configurable:true}};global.Base64.extendString=function(){Object.defineProperty(String.prototype,"fromBase64",noEnum(function(){return decode(this)}));Object.defineProperty(String.prototype,"toBase64",noEnum(function(urisafe){return encode(this,urisafe)}));Object.defineProperty(String.prototype,"toBase64URI",noEnum(function(){return encode(this,true)}))}}if(global["Meteor"]){Base64=global.Base64}})(this);
+    </script>
+    <script src="https://misc.360buyimg.com/felibs/jquery/2.1.2/jquery.min.js"></script>
+    <script src="https://misc.360buyimg.com/felibs/vue/2.1.10/vue.min.js"></script>
+    <script src="https://misc.360buyimg.com/felibs/moment.js/2.17.1/moment-with-locales.js"></script>
+    <script>
+        var ALPHA_INDEX = {
+            '&lt': '<',
+            '&gt': '>',
+            '&quot': '"',
+            '&apos': '\'',
+            '&amp': '&',
+            '&lt;': '<',
+            '&gt;': '>',
+            '&quot;': '"',
+            '&apos;': '\'',
+            '&amp;': '&'
+        };
 
-    <script src="//misc.360buyimg.com/felibs/jquery/2.1.2/jquery.min.js"></script>
-    <script src="//misc.360buyimg.com/felibs/vue/2.1.10/vue.min.js"></script>
-    <script src="//misc.360buyimg.com/felibs/codemirror/5.24.2/codemirror.js"></script>
-    <script src="//misc.360buyimg.com/felibs/codemirror/5.24.2/xml.js"></script>
-    <script src="//misc.360buyimg.com/felibs/codemirror/5.24.2/css.js"></script>
-    <script src="//misc.360buyimg.com/felibs/codemirror/5.24.2/javascript.js"></script>
-    <script src="//misc.360buyimg.com/felibs/codemirror/5.24.2/htmlmixed.js"></script>
-    <script src="//misc.360buyimg.com/felibs/diff_match_patch/20121119/diff_match_patch.js"></script>
-    <script src="//misc.360buyimg.com/felibs/codemirror/5.24.2/merge.js"></script>
-    <script src="//misc.360buyimg.com/felibs/moment.js/2.17.1/moment-with-locales.js"></script>
+        var CHAR_INDEX = {
+            60: 'lt',
+            62: 'gt',
+            34: 'quot',
+            39: 'apos',
+            38: 'amp'
+        };
+
+        var CHAR_S_INDEX = {
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            '\'': '&apos;',
+            '&': '&amp;'
+        };
+
+        /**
+         * @constructor
+         */
+        function XmlEntities() {}
+
+        /**
+         * @param {String} str
+         * @returns {String}
+         */
+        XmlEntities.prototype.encode = function (str) {
+            if (str.length === 0) {
+                return '';
+            }
+            return str.replace(/<|>|"|'|&/g, function (s) {
+                return CHAR_S_INDEX[s];
+            });
+        };
+
+        /**
+         * @param {String} str
+         * @returns {String}
+         */
+        XmlEntities.encode = function (str) {
+            return new XmlEntities().encode(str);
+        };
+
+        /**
+         * @param {String} str
+         * @returns {String}
+         */
+        XmlEntities.prototype.decode = function (str) {
+            if (str.length === 0) {
+                return '';
+            }
+            return str.replace(/&#?[0-9a-zA-Z]+;?/g, function (s) {
+                if (s.charAt(1) === '#') {
+                    var code = s.charAt(2).toLowerCase() === 'x' ?
+                        parseInt(s.substr(3), 16) :
+                        parseInt(s.substr(2));
+
+                    if (isNaN(code) || code < -32768 || code > 65535) {
+                        return '';
+                    }
+                    return String.fromCharCode(code);
+                }
+                return ALPHA_INDEX[s] || s;
+            });
+        };
+
+        /**
+         * @param {String} str
+         * @returns {String}
+         */
+        XmlEntities.decode = function (str) {
+            return new XmlEntities().decode(str);
+        };
+
+        /**
+         * @param {String} str
+         * @returns {String}
+         */
+        XmlEntities.prototype.encodeNonUTF = function (str) {
+            var strLength = str.length;
+            if (strLength === 0) {
+                return '';
+            }
+            var result = '';
+            var i = 0;
+            while (i < strLength) {
+                var c = str.charCodeAt(i);
+                var alpha = CHAR_INDEX[c];
+                if (alpha) {
+                    result += "&" + alpha + ";";
+                    i++;
+                    continue;
+                }
+                if (c < 32 || c > 126) {
+                    result += '&#' + c + ';';
+                } else {
+                    result += str.charAt(i);
+                }
+                i++;
+            }
+            return result;
+        };
+
+        /**
+         * @param {String} str
+         * @returns {String}
+         */
+        XmlEntities.encodeNonUTF = function (str) {
+            return new XmlEntities().encodeNonUTF(str);
+        };
+
+        /**
+         * @param {String} str
+         * @returns {String}
+         */
+        XmlEntities.prototype.encodeNonASCII = function (str) {
+            var strLenght = str.length;
+            if (strLenght === 0) {
+                return '';
+            }
+            var result = '';
+            var i = 0;
+            while (i < strLenght) {
+                var c = str.charCodeAt(i);
+                if (c <= 255) {
+                    result += str[i++];
+                    continue;
+                }
+                result += '&#' + c + ';';
+                i++;
+            }
+            return result;
+        };
+
+        /**
+         * @param {String} str
+         * @returns {String}
+         */
+        XmlEntities.encodeNonASCII = function (str) {
+            return new XmlEntities().encodeNonASCII(str);
+        };
+    </script>
 
     <style>
         .curr {
             background-color: #fff;
             border-radius: 12px;
             border: 1px #ccc solid;
-        }
-        
-        .CodeMirror-merge,
-        .CodeMirror-merge .CodeMirror {
-            height: calc(100% - 10px);
-        }
-        
-        .CodeMirror-merge-2pane .CodeMirror-merge-pane {
-            height: calc(100% - -8px);
         }
         
         #app {
@@ -87,6 +227,7 @@
             display: flex;
             height: 50px;
             border-left: 1px #ccc solid;
+            border-bottom: 1px #ccc solid;
         }
         
         .title-bar .tl {
@@ -94,6 +235,7 @@
             max-width: 50%;
             font-size: 1em;
             text-indent: 2em;
+            position: relative;
         }
         
         .title-bar .tt {
@@ -101,13 +243,56 @@
         }
         
         .title-bar .tl .txt {
-            color: #989898;
+                color: #989898;
+                display: inline-block;
+                text-align: left;
+                text-indent: 4px;
+                width: 70%;
+                overflow: hidden;
+                height: 23px;
+                position: absolute;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                overflow: hidden;
         }
         
         #view {
             flex: 1;
             height: calc(100% - 80px);
+            word-break: break-all;
+            padding: 20px;
+            display: flex;
+            border-left: 1px #ccc solid;
+            overflow-y: scroll;
         }
+        #view  span{
+            /*display: none;*/
+        }
+        .left-1 {
+            flex: 1;
+            padding: 10px;
+            max-width: 50%;
+        }
+        
+        .right-1 {
+            flex: 1;
+            padding: 10px;
+            max-width: 50%;
+        }
+
+        /*del,ins{
+            font-size: 20px;
+            font-weight: bold;
+        }*/
+
+        /*del::before{
+            content: "qq";
+            position: absolute;
+        }
+        ins::after{
+            content: "qq";
+            position: absolute;
+        }*/
     </style>
 </head>
 
@@ -134,12 +319,37 @@
                 <h2 class="tl">本地: <span class="txt">{{current.relativePath||current.baseName}}</span> </h2>
                 <h2 class="tl tt">远程: <span class="txt">{{current.removeUrl}}</span></h2>
             </div>
-            <div id="view"></div>
+            <div id="view">
+                <code class="left-1"></code>
+                <code class="right-1"></code>
+            </div>
         </div>
     </div>
 
     <script>
+        var entities = new XmlEntities();
+        var dmp = new diff_match_patch();
+        function decode(base64) {
+            return Base64.decode(base64);
+        }
         moment.locale('zh-cn');
+
+        /**
+         * format tool with &para;  may cause probrem
+         */
+        function clean(html) {
+            var html = html.replace(/\&para;/ig, "");
+            var wrapper = document.createElement("div");
+            wrapper.innerHTML = html;
+            $(wrapper).find("del,ins").each(function (n, i) {
+                if ((/^\n*$/ig).test(i.innerText) || (/^\r*$/ig).test(i.innerText) || (/^(\r\n*)$/ig).test(i.innerText)) {
+                    $(i).remove();
+                }
+            });
+       
+            window.wrapper = wrapper;
+            return wrapper.innerHTML
+        }
 
         function ready(data) {
             data.map(d => {
@@ -164,56 +374,33 @@
                         return true;
                     },
                     selectFile(item) {
-                        this.createDv(item);
-                        window.dv.edit.setValue(item.localTxt);
-                        window.dv.rightOriginal().setValue(item.remoteTxt);
                         this.current = item;
-                    },
-                    createDv(item) {
-                        $(view).empty();
-                        let mode = "text/css"
-                        switch (item.type) {
-                            case ".html":
-                                mode = "text/html";
-                                break;
-                            case ".css":
-                                mode = "css";
-                                break;
-                            case ".js":
-                                mode = "javascript";
-                                break;
-                        }
-                        window.dv = CodeMirror.MergeView(view, {
-                            value: "",
-                            origLeft: null,
-                            orig: "",
-                            lineNumbers: true,
-                            mode: mode,
-                            highlightDifferences: true,
-                            collapseIdentical: true
-                        });
+                        var text1 = this.current.localTxt;
+                        var text2 = this.current.remoteTxt;
+
+
+
+                        var d = dmp.diff_main(text1, text2);
+                        dmp.diff_cleanupSemantic(d);
+                        var ds = dmp.diff_prettyHtml(d);
+
+                        $(".left-1")[0].innerHTML = clean(ds) //ds.replace(/\&para\;/ig,"");
+                        $(".right-1")[0].innerText = text2;
+                        //$("#view")[0].innerHTML = clean(ds);
+                        //console.log(ds);
+
+      
+
                     }
                 },
                 mounted: function () {
-                    window.dv = CodeMirror.MergeView(view, {
-                        value: "",
-                        origLeft: null,
-                        orig: "",
-                        lineNumbers: true,
-                        mode: "text/html",
-                        highlightDifferences: true,
-                        collapseIdentical: true
-                    });
-                    if (this.arr[0]) {
-                        this.selectFile(this.arr[0]);
-                    }
+                    //console.log(data);
                 }
             })
         }
-
-        $.getJSON("/?action=fetch").then(data => {
-            ready(data);
-        });
+        var json= decode(`data_place_holder`);
+        json = JSON.parse(json);
+        ready(json);
     </script>
 </body>
 

@@ -11,8 +11,42 @@ const request = require('request-promise');
 const beautify_js = require('js-beautify').js;
 const beautify_css = require('js-beautify').css;
 const beautify_html = require('js-beautify').html;
+const lodash = require('lodash');
+
+var Entities = require('html-entities').XmlEntities;
+
+var entities = new Entities();
+
+function encode(str) {
+    return new Buffer(str).toString("base64");
+}
+
+function hostServer(data) {
+    let server = http.createServer((req, res) => {
+        let tpl = fs.readFileSync(path.join(__dirname, "bin/index.html"), 'utf-8');
+        tpl = tpl.replace("data_place_holder", data);
+        res.write(tpl, "utf-8", function () {
+                res.end();
+        })
+    })
+    server.listen(0);
+    let port = server.address().port;
+    console.log(`listen at: ${port}`);
+    opn('http://localhost:' + port);
+}
+
+function outPutFile(data, filePath) {
+    let tpl = fs.readFileSync(path.join(__dirname, "bin/index.html"), 'utf-8');
+    tpl = tpl.replace("data_place_holder", data);
+    if (fs.existsSync(filePath)) {
+        shell.rm(filePath);
+    }
+    fs.writeFileSync(filePath, tpl, "utf-8");
+}
+
 
 module.exports = function (config) {
+    console.log(config.remote);
     let server;
 
     if (config.local && config.remote) {
@@ -78,22 +112,25 @@ module.exports = function (config) {
         let promisePool = [];
 
         function beautify(item) {
-            switch (item.type) {
-                case ".js":
-                    item.localTxt = beautify_js(item.localTxt);
-                    item.remoteTxt = beautify_js(item.remoteTxt);
+            // switch (item.type) {
+            //     case ".js":
+            //         item.localTxt = beautify_js(item.localTxt);
+            //         item.remoteTxt = beautify_js(item.remoteTxt);
 
-                    break;
-                case ".css":
-                    item.localTxt = beautify_css(item.localTxt);
-                    item.remoteTxt = beautify_css(item.remoteTxt);
-                    break;
-                case ".html":
-                    item.localTxt = beautify_html(item.localTxt);
-                    item.remoteTxt = beautify_html(item.remoteTxt);
-                    break;
-            }
+            //         break;
+            //     case ".css":
+            //         item.localTxt = beautify_css(item.localTxt);
+            //         item.remoteTxt = beautify_css(item.remoteTxt);
+            //         break;
+            //     case ".html":
+            //         item.localTxt = beautify_html(item.localTxt);
+            //         item.remoteTxt = beautify_html(item.remoteTxt);
+            //         break;
+            // }
         }
+
+
+
         obj.forEach(item => {
             let promise = new Promise((resolve, reject) => {
                 request(item.removeUrl)
@@ -116,23 +153,12 @@ module.exports = function (config) {
         });
 
         Promise.all(promisePool).then(arr => {
-            server = http.createServer((req, res) => {
-                let myUrl = querystring.parse(url.parse(req.url).query);
-                if (myUrl.action == "fetch") {
-                    res.write(JSON.stringify(arr), "utf-8", function () {
-                        res.end();
-                    });
-                } else {
-                    let tpl = fs.readFileSync(path.join(__dirname, "bin/index.html"), 'utf-8');
-                    res.write(tpl, "utf-8", function () {
-                        res.end();
-                    })
-                }
-            })
-            server.listen(0);
-            let port = server.address().port;
-            console.log(`listen at: ${port}`);
-            opn('http://localhost:' + port);
+            let json = JSON.stringify(arr);
+            if (!config.outPutFile) {
+                hostServer(encode(json));
+            } else {
+                outPutFile(encode(json), config.outPutFile);
+            }
         });
     } else {
         //console.log("");

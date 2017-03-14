@@ -1,6 +1,6 @@
 {
   "name": "jdiff",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "local-remote differ",
   "preferGlobal": true,
   "bin": {
@@ -25,7 +25,10 @@
   },
   "dependencies": {
     "commander": "^2.9.0",
+    "html-entities": "^1.2.0",
+    "htmlencode": "0.0.4",
     "js-beautify": "^1.6.11",
+    "lodash": "^4.17.4",
     "opn": "^4.0.2",
     "pkginfo": "^0.4.0",
     "request": "^2.79.0",
