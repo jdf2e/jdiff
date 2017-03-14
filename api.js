@@ -128,9 +128,6 @@ module.exports = function (config) {
             //         break;
             // }
         }
-
-
-
         obj.forEach(item => {
             let promise = new Promise((resolve, reject) => {
                 request(item.removeUrl)
